@@ -4,9 +4,10 @@ name: Post Daily Tweet
 # 実行のきっかけを設定
 on:
   schedule:
-    # 毎日 日本時間の午前9時に実行 (UTCでは0時)
-    # cronの書式。左から「分 時 日 月 曜日」
-    - cron: '0 0 * * *'
+    # 日本時間の午前7時 (前日の22時UTC) に実行
+    - cron: '0 22 * * *'
+    # 日本時間の午後5時 (同日の8時UTC) に実行
+    - cron: '0 8 * * *'
   
   # 手動でも実行できるようにする
   workflow_dispatch:
