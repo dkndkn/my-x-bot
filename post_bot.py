@@ -28,7 +28,6 @@ def create_tweet_text():
     jst = pytz.timezone('Asia/Tokyo')
     now = datetime.now(jst)
     current_hour = now.hour
-    time_str = now.strftime("%Y年%m月%d日 %H:%M")
 
     # 朝（7時～11時）か、それ以外（夕方）かで挨拶リストを切り替える
     if 7 <= current_hour < 12:
@@ -39,7 +38,7 @@ def create_tweet_text():
     # リストからランダムに挨拶を選ぶ
     greeting = random.choice(greeting_list)
     
-    return f"【{time_str}】\n{greeting} #bot"
+    return f"{greeting}"
 
 def post_tweet():
     # 0分～119分（約2時間）のランダムな待ち時間を設定
