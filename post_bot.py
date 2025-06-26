@@ -1,39 +1,54 @@
 import tweepy
 import os
-from datetime import datetime
 import pytz
+import random
+import time
+from datetime import datetime
 
-# --- 投稿する内容をここで自由に設定 ---
+# --- 時間帯別の挨拶リスト ---
+morning_greetings = [
+    "おはようございます！",
+    "朝の空気が気持ちいいですね。",
+    "新しい一日の始まりです。素敵な日になりますように！",
+    "朝のコーヒーはもう飲みましたか？",
+    "今日も一日、元気にいきましょう！"
+]
+
+evening_greetings = [
+    "こんばんは。",
+    "お仕事や学校、お疲れ様です！",
+    "今日一日、どんな日でしたか？",
+    "ゆっくり休んでくださいね。",
+    "素敵な夜をお過ごしください。"
+]
+# -----------------------------
+
 def create_tweet_text():
     # 日本時間を取得
     jst = pytz.timezone('Asia/Tokyo')
     now = datetime.now(jst)
+    current_hour = now.hour
     time_str = now.strftime("%Y年%m月%d日 %H:%M")
 
-    # ここに投稿したい文章を書きます
-    # 例：毎日違う挨拶をする
-    greetings = [
-        "こんにちは！",
-        "今日も一日、穏やかに過ごせますように。",
-        "いかがお過ごしですか？",
-        "ひと息ついて、リラックスする時間も大切に。",
-        "体調に気をつけて、無理しないでくださいね。",
-        "最近、何か楽しいことはありましたか？",
-        "良い一日をお過ごしくださいね。",
-        "今日の空はどんな色ですか？",
-        "小さな幸せが見つかる一日になりますように。",
-        "週末の予定はもう立てましたか？",
-        "コーヒーでも飲みながら、少し休憩しませんか？",
-        "何気ない日常に、素敵な発見がありますように。"
-    ]
-    # 日付を元に、日替わりで挨拶を選ぶ
-    today_greeting = greetings[now.day % len(greetings)] 
+    # 朝（7時～11時）か、それ以外（夕方）かで挨拶リストを切り替える
+    if 7 <= current_hour < 12:
+        greeting_list = morning_greetings
+    else:
+        greeting_list = evening_greetings
+
+    # リストからランダムに挨拶を選ぶ
+    greeting = random.choice(greeting_list)
     
-    return f"{time_str}です。\n{today_greeting} #bot"
-# ------------------------------------
+    return f"【{time_str}】\n{greeting} #bot"
 
 def post_tweet():
-    # ステップ2で設定したGitHub Secretsからキーを読み込む
+    # 0分～119分（約2時間）のランダムな待ち時間を設定
+    delay_seconds = random.randint(0, 119) * 60
+    print(f"Wait for {delay_seconds // 60} minutes before posting...")
+    time.sleep(delay_seconds)
+    print("Wait finished. Posting tweet now...")
+
+    # GitHub Secretsからキーを読み込む
     consumer_key = os.environ.get('X_API_KEY')
     consumer_secret = os.environ.get('X_API_KEY_SECRET')
     access_token = os.environ.get('X_ACCESS_TOKEN')
